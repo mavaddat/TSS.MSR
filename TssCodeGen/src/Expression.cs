@@ -95,7 +95,7 @@ namespace CodeGen
                 case OpCode.Minus: return lhs - rhs;
                 case OpCode.Mul: return lhs * rhs;
                 case OpCode.Div: return lhs / rhs;
-                case OpCode.Shl: return lhs << (int)rhs;
+                case OpCode.Shl: return lhs << rhs;
             }
             throw new Exception("Unknown OpCode");
         }
@@ -104,7 +104,7 @@ namespace CodeGen
         {
             if (Op == OpCode.Sizeof)
             {
-                operands.Push((int)TpmTypes.Lookup(operands.Pop().Value).GetSize());
+                operands.Push(TpmTypes.Lookup(operands.Pop().Value).GetSize());
                 return;
             }
             Operand rhs = operands.Pop();

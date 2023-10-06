@@ -715,7 +715,7 @@ namespace CodeGen
 
         public override int GetHashCode()
         {
-            return (int)Type.GetHashCode();
+            return Type.GetHashCode();
         }
     } // class TpmUnionElement
 

@@ -13,7 +13,7 @@ using System.Linq;
 using System.Xml.Serialization;
 
 /*
- * Entry point for the code generatator.
+ * Entry point for the code generator.
  * 
  * This program works in three phases:
  *  1) Parses Part 2 and 3 of the TPM 2.0 spec, extracts tables with the definitions of TPM 2.0 data
@@ -31,6 +31,7 @@ namespace CodeGen
 {
     class Program
     {
+        [Flags]
         enum Action
         {
             None = 0,
@@ -53,7 +54,7 @@ namespace CodeGen
 
         static Option ProcessPathOption(string curOpt, string targetOpt, string[] args, ref int i, ref string path)
         {
-            if (path != null || 0 != string.Compare(curOpt, targetOpt, true))
+            if (path != null || 0 != string.Compare(curOpt, targetOpt, StringComparison.OrdinalIgnoreCase))
                 return Option.NotMatched;
 
             if (++i == args.Length)
@@ -78,7 +79,7 @@ namespace CodeGen
 
         static void Main(string[] args)
         {
-            bool   help = false;
+            bool help = false;
             string specPath = null;
             string tssRootPath = null;
             Action actions = Action.None;
@@ -90,7 +91,7 @@ namespace CodeGen
 
             for (int i = 0; i < args.Length; ++i)
             {
-                string  opt = args[i];
+                string opt = args[i];
 
                 if (opt[0] != '-' && opt[0] != '/')
                 {
@@ -99,7 +100,7 @@ namespace CodeGen
                     break;
                 }
 
-                opt = opt.Substring(1);
+                opt = opt[1..];
 
                 var res = ProcessPathOption(opt, "spec", args, ref i, ref specPath);
                 if (res == Option.ParsingError)
@@ -113,21 +114,21 @@ namespace CodeGen
                 if (res == Option.Matched)
                     continue;
 
-                if (opt == "h" || opt == "help" || opt == "?")
+                if (opt is "h" or "help" or "?")
                 {
                     help = true;
                 }
-                else if (0 == string.Compare(opt, "extract", true))
+                else if (0 == string.Compare(opt, "extract", StringComparison.OrdinalIgnoreCase))
                 {
                     actions |= Action.ExtractFromDoc;
                 }
-                else if (0 == string.Compare(opt, "noextract", true))
+                else if (0 == string.Compare(opt, "noextract", StringComparison.OrdinalIgnoreCase))
                 {
                     actions &= ~Action.ExtractFromDoc;
                 }
                 else
                 {
-                    Lang lang = allLangs.FirstOrDefault(l => 0 == string.Compare(opt, langName(l), true));
+                    Lang lang = allLangs.FirstOrDefault(l => 0 == string.Compare(opt, langName(l), StringComparison.OrdinalIgnoreCase));
                     if (lang != Lang.None)
                     {
                         if (!langs.Contains(lang))
@@ -135,7 +136,7 @@ namespace CodeGen
                     }
                     else
                     {
-                        lang = allLangs.FirstOrDefault(l => 0 == string.Compare(opt, "no" + langName(l), true));
+                        lang = allLangs.FirstOrDefault(l => 0 == string.Compare(opt, "no" + langName(l), StringComparison.OrdinalIgnoreCase));
                         if (lang != Lang.None)
                         {
                             langs = allLangs.Where(l => l != lang).ToList();
@@ -192,7 +193,7 @@ namespace CodeGen
             if (specPath == null)
             {
                 string pwd = Directory.GetCurrentDirectory();
-                specPath = Path.GetFullPath(Path.Combine(pwd, @"..\..\..\TpmSpec"));
+                specPath = Path.GetFullPath(Path.Combine(pwd, @"TpmSpec"));
             }
             string rawTables = Path.GetFullPath(Path.Combine(specPath, "RawTables.xml"));
 
@@ -206,10 +207,14 @@ namespace CodeGen
                     if (res == DialogResult.Yes)
                     {
                         foreach (Process p in wordProcesses) try
-                        {
-                            p.Kill();
-                        }
-                        catch (Exception) {}
+                            {
+                                p.Kill();
+                            }
+                            catch (Exception)
+                            {
+                                // ignored
+                            }
+
                         Thread.Sleep(2000);
                     }
                 }
@@ -222,9 +227,6 @@ namespace CodeGen
             List<RawTable> tables = XmlDeserializeFromFile<List<RawTable>>(rawTables);
             TypeExtractor tpe = new TypeExtractor(tables);
             tpe.Extract();
-
-            if (tssRootPath == null)
-                tssRootPath = @"..\..\..\..\";
 
             if (langs.Count == 0)
                 langs = allLangs.Skip(1).ToList();

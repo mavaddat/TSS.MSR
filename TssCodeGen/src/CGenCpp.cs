@@ -719,8 +719,7 @@ namespace CodeGen
                 default: break;
             }
 
-            string returnFieldName;
-            string returnType = GetCommandReturnType(gen, resp, cmdName, out returnFieldName);
+            string returnType = GetCommandReturnType(gen, resp, cmdName, out var returnFieldName);
 
             string className = " Tpm2::" + (gen != CommandFlavor.Synch ? "AsyncMethods::" : "");
             bool paramsPresent = gen != CommandFlavor.AsyncResponse;

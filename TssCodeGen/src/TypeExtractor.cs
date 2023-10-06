@@ -503,8 +503,7 @@ namespace CodeGen
 
         bool ProcessTable(RawTable rawTable)
         {
-            string algClass;
-            RawTable[] expandedTables = ExpandTable(rawTable, out algClass);
+            RawTable[] expandedTables = ExpandTable(rawTable, out var algClass);
             if (expandedTables != null)
             {
                 // Table caption contained an algorithm macro.
@@ -668,8 +667,7 @@ namespace CodeGen
                 // Drop TPM_ALG_ prefix
                 string algName = tbl[r, 0].Substring(8);
                 // Check for algorithm synonyms
-                string altName;
-                if (definedAlgs.TryGetValue(algID, out altName))
+                if (definedAlgs.TryGetValue(algID, out var altName))
                 {
                     if (altName.Length >= algName.Length)
                         continue;

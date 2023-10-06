@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.Office.Interop.Word;
 using System.Diagnostics;
+using Range = Microsoft.Office.Interop.Word.Range;
 
 namespace CodeGen
 {
@@ -49,7 +50,7 @@ namespace CodeGen
                 para = tableRange.Paragraphs[1].Previous();
                 string tableText = tableRange.Text;
                 string tableCaption = para.Range.Text;
-                tableCaption = tableCaption.TrimEnd(new char[] { '\r' });
+                tableCaption = tableCaption.TrimEnd('\r');
                 
                 if (!tableCaption.StartsWith("Table") || tableCaption.Contains("xx"))
                 {
@@ -104,15 +105,14 @@ namespace CodeGen
                     }
                 }
 
-                int numHandles;
-                string[,] stringTable = WordTableToStringTable(tbl, out numHandles, TrimNonPrintable(tableCaption));
+                string[,] stringTable = WordTableToStringTable(tbl, out var numHandles, TrimNonPrintable(tableCaption));
 
                 RawTables.Add(specPart, TrimNonPrintable(tableCaption),
                               TrimNonPrintable(para.Next().Range.Text), // comment text
                               stringTable, numHandles);
             }
-            ((Microsoft.Office.Interop.Word._Document)sourceDoc).Close(WdSaveOptions.wdDoNotSaveChanges);
-            ((Microsoft.Office.Interop.Word._Application)app).Quit(WdSaveOptions.wdDoNotSaveChanges);
+            sourceDoc.Close(WdSaveOptions.wdDoNotSaveChanges);
+            app.Quit(WdSaveOptions.wdDoNotSaveChanges);
         }
 
         string[,] WordTableToStringTable(Table tbl, out int numHandles, string tableName)
@@ -197,7 +197,7 @@ namespace CodeGen
             {
                 if (c == '\f')
                     continue;
-                if (Char.IsWhiteSpace(c))
+                if (char.IsWhiteSpace(c))
                 {
                     if (prevSpace)
                         continue;
@@ -206,7 +206,7 @@ namespace CodeGen
                 }
                 else
                     prevSpace = false;
-                if (!(Char.IsSymbol(c) || Char.IsLetterOrDigit(c) || Char.IsPunctuation(c) || Char.IsWhiteSpace(c)) ||
+                if (!(char.IsSymbol(c) || char.IsLetterOrDigit(c) || char.IsPunctuation(c) || char.IsWhiteSpace(c)) ||
                     c < 0x20 && (c != '\r' && c != '\n' && c != '\t') || c > 0x7F)
                 {
                     Debug.WriteLine("skipping symbol char" + c + " \n");
@@ -219,8 +219,6 @@ namespace CodeGen
 
         }
 
-        Object one = 1;
-        object missing = System.Reflection.Missing.Value;
         Application app;
         Document sourceDoc;
     }
