@@ -152,37 +152,40 @@ namespace CodeGen
 
             if (help)
             {
-                Console.WriteLine("TSS Code Generator tool.\n" +
-                    "Copyright (c) Microsoft Corporation. All rights reserved.\n" +
-                    "\n" +
-                    "This tool (re)generates the interface part of the TPM Software Stack (TSS)\n" +
-                    "implementations for all supported programming languages/frameworks (TSS.Net,\n" +
-                    "TSS.CPP, TSS.Java, TSS.JS, TSS.Py)\n" +
-                    "\n" +
-                    "All command line parameters are case-insensitive and optional.\n" +
-                    "Option names are prepended with either dash ('-') or slash ('/') marks.\n" +
-                    "\n" + 
-                    "The following options are supported:\n" +
-                    "  h|help|?    - Display this message\n" +
-                    "  spec <path> - Path to the folder containing the TPM 2.0 specification Word\n" +
-                    "                documents and/or intermediate XML representation (RawTables.xml).\n" +
-                    "                By default the TssCodeGen/TpmSpec folder is used.\n" +
-                    "  dest <path> - Path to the root folder containing individual TSSes to be updated.\n" +
-                    "                By default the TSS implementations in this repo clone (in the\n" +
-                    "                folders adjasent to the TssCodeGen folder) are updated.\n" +
-                    "  extract     - Force parsing the TPM 2.0 spec documents even if the intermediate\n" +
-                    "                XML representation file (RawTables.xml) is available. By default\n" +
-                    "                the tool will always use RawTables.xml if it is present.\n" +
-                    "  dotNet, cpp, java, node, py - Any combination of these options can be used\n" +
-                    "                to select TSS implementations to be updated. By default (when\n" +
-                    "                none of them is present) all supported languages are updated.\n" +
-                    "\n" +
-                    "Note that the default path values used by the tool are selected in expectation\n" +
-                    "that it is run from the Visual Studio after being built from its github repo clone.\n" +
-                    "If however the binary location or folder structure is different, options 'spec'\n" +
-                    "and 'dest' will be required." +
-                    "\n"
-                    );
+                Console.WriteLine("""
+                    TSS Code Generator tool.
+                    Copyright (c) Microsoft Corporation. All rights reserved.
+                    
+                    This tool (re)generates the interface part of the TPM Software Stack (TSS)
+                    implementations for all supported programming languages/frameworks (TSS.Net,
+                    TSS.CPP, TSS.Java, TSS.JS, TSS.Py)
+                    
+                    All command line parameters are case-insensitive and optional.
+                    Option names are prepended with either dash ('-') or slash ('/') marks (e.g., -help).
+                    
+                    The following options are supported:
+                      h|help|?    - Displays this message
+                      spec <path> - Path to the folder containing the TPM 2.0 specification Word
+                                    documents and/or intermediate XML representation (RawTables.xml).
+                                    By default the TssCodeGen/TpmSpec folder is used.
+                      dest <path> - Path to the root folder containing individual TSSes to be updated.
+                                    By default the TSS implementations in this repo clone (in the
+                                    folders adjacent to the TssCodeGen folder) are updated.
+                      extract     - Force parsing the TPM 2.0 spec documents even if the intermediate
+                                    XML representation file (RawTables.xml) is available. By default
+                                    the tool will always use RawTables.xml if it is present.
+                      dotNet,     - Language specifier. Any one or more of these may be provided
+                      cpp,          to select TSS implementation(s) to be updated. By default (in the 
+                      java,         absence of any language specification), all supported languages
+                      node,         are updated.
+                      py
+
+                    
+                    Note that the default path values used by the tool are selected in expectation
+                    that it is run from the Visual Studio after being built from its github repo clone.
+                    If however the binary location or folder structure is different, options 'spec'
+                    and 'dest' will be required.
+                    """);
                 return;
             }
 
