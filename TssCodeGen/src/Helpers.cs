@@ -38,12 +38,12 @@ namespace CodeGen
             {
                 // All caps -> just cap the first letter
                 s = s.ToLower();
-                s = Char.ToUpper(s[0]) + s.Substring(1);
+                s = char.ToUpper(s[0]) + s.Substring(1);
             }
             else
             {
                 // Mix -> Just change the first letter
-                s = Char.ToUpper(s[0]) + s.Substring(1);
+                s = char.ToUpper(s[0]) + s.Substring(1);
             }
             return s;
         }

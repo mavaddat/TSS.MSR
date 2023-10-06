@@ -348,7 +348,7 @@ namespace CodeGen
 
         internal static string Separator<T>(T elem, IEnumerable<T> list, string sep = ",", string term = "")
         {
-            return Object.ReferenceEquals(list.Last(), elem) ? term : sep;
+            return object.ReferenceEquals(list.Last(), elem) ? term : sep;
         }
 
         internal static string ToHex(int value)

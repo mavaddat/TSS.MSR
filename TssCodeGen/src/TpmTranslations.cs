@@ -371,7 +371,7 @@ namespace CodeGen
         {
             if (name.Contains("__"))
                 return name;
-            Debug.Assert(!Char.IsDigit(name[0]));
+            Debug.Assert(!char.IsDigit(name[0]));
 
             return Helpers.ToCamelStyle(name);
         }

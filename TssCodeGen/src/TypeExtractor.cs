@@ -117,7 +117,7 @@ namespace CodeGen
 
         static bool IsAlgSpecChar(string text, int pos)
         {
-            return pos < text.Length && Char.IsLetter(text[pos]) && text[pos] != '_';
+            return pos < text.Length && char.IsLetter(text[pos]) && text[pos] != '_';
         }
 
         static void CopyRow(string[,] dstTable, int dstRow, string[,] srcTable, int srcRow)

@@ -118,9 +118,9 @@ namespace CodeGen
         public static bool IsNumber(string val)
         {
             int numIs;
-            return Int32.TryParse(val, out numIs) ||
+            return int.TryParse(val, out numIs) ||
                    val.ToLower().StartsWith("0x") &&
-                   Int32.TryParse(val.Substring(2), NumberStyles.HexNumber,
+                   int.TryParse(val.Substring(2), NumberStyles.HexNumber,
                                   new NumberFormatInfo(), out numIs);
         }
 

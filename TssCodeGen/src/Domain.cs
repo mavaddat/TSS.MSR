@@ -50,7 +50,7 @@ namespace CodeGen
             return !(lhs == rhs);
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             return this == (SingleValue)obj;
         }
@@ -87,7 +87,7 @@ namespace CodeGen
             return !(lhs == rhs);
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             return this == (BoundedRange)obj;
         }

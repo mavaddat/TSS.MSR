@@ -249,7 +249,7 @@ namespace CodeGen
             Console.WriteLine("\nAll done!");
         }
 
-        public static void XmlSerializeToFile(String FileName, Object o)
+        public static void XmlSerializeToFile(string FileName, object o)
         {
             // note: the XmlSerializer throws an exception that is caught internally.  
             // it can safely be ignored in the debugger
@@ -260,13 +260,13 @@ namespace CodeGen
             writer.Dispose();
         }
 
-        public static T XmlDeserializeFromFile<T>(String FileName)
+        public static T XmlDeserializeFromFile<T>(string FileName)
         {
             // note: the XmlSerializer throws an exception that is caught internally.  
             // it can safely be ignored in the debugger
             XmlSerializer serializer = new XmlSerializer(typeof(T));
             StreamReader reader = new StreamReader(FileName);
-            Object newObject = serializer.Deserialize(reader);
+            object newObject = serializer.Deserialize(reader);
             reader.Close();
             reader.Dispose();
             return (T)newObject;

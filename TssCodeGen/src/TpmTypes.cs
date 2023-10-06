@@ -210,7 +210,7 @@ namespace CodeGen
             return !((lhs < rhs) || (lhs == rhs));
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             return this == (TpmType)obj;
         }
@@ -383,7 +383,7 @@ namespace CodeGen
             return !(lhs == rhs);
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             return this == (BitfieldElement)obj;
         }
@@ -708,7 +708,7 @@ namespace CodeGen
             return !(lhs == rhs);
         }
 
-        public override bool Equals(Object obj)
+        public override bool Equals(object obj)
         {
             return this == (UnionMember)obj;
         }
