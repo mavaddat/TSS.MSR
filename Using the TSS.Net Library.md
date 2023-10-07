@@ -81,7 +81,7 @@ attempts to illustrate the use of the TPM to support common scenarios.
 TSS.Net &mdash; and indeed the TPM &mdash; goes far beyond the examples in this
 document.
 
-## Naming Conventions
+### Naming Conventions
 
 In this section, we describe TSS.Net’s type-naming convention. The TPM
 specification uses c-style names for types. For example, the TPM
@@ -95,13 +95,13 @@ frequently used types in the class libraries.
 The full set of translation rules is provided elsewhere, but to improve
 readability the following general principles will be useful:
 
-### Function Names
+#### Function Names
 
 TPM function names have `TPM2_` omitted. For example,
 `TPM2_GetTestResult` becomes the member function `GetTestResult` in the
 `Tpm2` class.
 
-### Structures
+#### Structures
 
 Structures (`TPMS_`, `TPMT_`) have the initial identifier and any
 contained underscores removed, and then the resulting word collection is
@@ -110,19 +110,19 @@ camel-cased. For example, `TPMS_ASYM_PARMS` becomes the class
 
 Similar rules are applied for enumerations and bit fields.
 
-### Helper or Internal Function Names
+#### Helper or Internal Function Names
 
 Helper or internal function names are prefixed with an underscore. For
 example `_GetLastResponseCode`.
 
-# Using the Library
+## Using the Library
 
 In this section we illustrate the use of TSS.Net (and the underlying
 TPM) by means of a series of examples. The samples themselves are in the
 sample projects, and it is assumed that the “tpm” object has been
 created and connected (as illustrated above).
 
-## Simple Commands
+### Simple Commands
 
 The following sample uses the TPM to calculate the SHA256 hash a 3-byte
 array. It illustrates the use of enumerated types (`TpmAlgId.Sha256`)
@@ -159,7 +159,7 @@ If the TPM returns an error then the default behavior of TSS.Net is to
 convert the error into an exception. Ways to override this behavior are
 described later.
 
-# Handles and Command Authorization
+## Handles and Command Authorization
 
 The following example illustrates the use of TPM handles and how
 commands are authorized.
@@ -186,8 +186,6 @@ TpmHandle hashHandle = tpm.HashSequenceStart(authVal, TpmAlgId.Sha1);
 // "session." Every handle that requires authorization requires
 // a session that conveys knowledge of the auth-value (or other
 // authorization).
-
-// in plaintext.
 
 // The simplest type of a session used in the examples below is a
 // "password authorization session” (PWAP session), where the password
@@ -240,11 +238,11 @@ byte[] hashedData = tpm[authVal].SequenceComplete(
 Console.WriteLine("Hashed data: " + BitConverter.ToString(hashedData));
 ```
 
-## Notable Features
+### Notable Features
 
 We note the following features:
 
-### Handles
+#### Handles
 
 User-created TPM objects (keys, hash-sequence objects, etc.) are
 assigned a 32-bit unique identifier by the TPM at creation. This
@@ -273,7 +271,7 @@ To simplify programming the bare TPM, TSS.Net also includes a built-in
 resource manager that provides similar capabilities to Windows (this is
 described later).
 
-### Authorization
+#### Authorization
 
 Use of most TPM resources (keys, ownership, privacy related actions,
 etc.) must be authorized. The TPM provides two forms of authorization:
@@ -291,7 +289,7 @@ construct called a session. There is one session object for each handle
 in the command that needs authorization. Although other styles of
 communicating authorization are illustrated in the sample, it is most
 convenient to convey authorization information to the TSS.Net through
-the `[ ]` operator, as illustrated in the example above. 
+the `[ ]` operator, as illustrated in the example above.
 
 > [!NOTE]
 > Note that `[ ]` is **not** used as an array accessor in this case. The operator
@@ -304,7 +302,7 @@ example above.
 
 More complex forms of authorization are illustrated in later examples.
 
-## Union Types and Error Handling
+### Union Types and Error Handling
 
 The following example demonstrates creation of an RSA primary signing
 key, using the TPM to sign data, and then using the TSS.Net library and
@@ -340,7 +338,7 @@ byte[] creationHash;
 // Ask the TPM to create a new primary RSA signing key.
 TpmHandle keyHandle = tpm[OwnerAuth].CreatePrimary(
     TpmHandle.RhOwner,                          // in the owner-hierarchy
-    new SensitiveCreate(keyAuth, new byte[0]),  // with this aurh-value
+    new SensitiveCreate(keyAuth, new byte[0]),  // with this auth-value
     keyTemplate,                                // describes key
     new byte[0],                                // for creation ticket
     new PcrSelection[0],                        // for creation ticket
@@ -449,8 +447,8 @@ from the TPM you may cast it to the underlying class (perhaps using
 Tpm2Lib.TpmPublic
     TpmAlgId         type             = Rsa
     TpmAlgId         nameAlg          = Sha1
-    ObjectAttr       objectAttributes = FixedTPM| FixedParent| SensitiveDataOrigin|                        
-                                        UserWithAuth| Sign
+    ObjectAttr       objectAttributes = FixedTPM | FixedParent | SensitiveDataOrigin |                        
+                                        UserWithAuth | Sign
     ushort           authPolicySize   = 0x0 (0)
     byte             authPolicy[0]    = 0x
     RsaParms         parameters  (IPublicParmsUnion)
@@ -475,7 +473,7 @@ object. The methods `XmlSerializeToFile()` and
 `XmlDeserializeFromFile()` allow any TPM structure to be saved and
 restored in a machine and TPM-independent form.
 
-## HMAC Sessions
+### HMAC Sessions
 
 This sample illustrates how TSS.Net may be used to provide an HMAC
 session for authorization. As the comments in the code describe, many
@@ -524,7 +522,7 @@ common use cases). The command `StartAuthSessionEx` is a simple wrapper
 around `StartAuthSession` that is easier to use. TSS.Net contains a few
 more such functions.
 
-## A Simple Policy Sessions
+### A Simple Policy Sessions
 
 A Policy Session is a TPM construct that provides sophisticated logic
 for command authorization. The TPM defines about a dozen elementary
@@ -594,7 +592,7 @@ tpm.FlushContext(sess.Handle);
 tpm.FlushContext(primHandle);
 ```
 
-## A Policy Session with OR-Branches
+### A Policy Session with OR-Branches
 
 This example extends the previous example to the policy above OR
 proof-of-knowledge of a password using two policy branches and a
@@ -646,7 +644,7 @@ Console.WriteLine("Unsealed data: " + BitConverter.ToString(unsealedData));
 // [[ clean-up omitted ]]
 ```
 
-## Policy Serialization and Policies with Callbacks
+### Policy Serialization and Policies with Callbacks
 
 The sample Policy (`SamplePolicySerializationAndCallbacks`) demonstrates
 how policies can be persisted to XML in a standard form (this is
@@ -670,7 +668,7 @@ The application program can install callbacks for:
 
 We do not include the sample in this document because it is quite long.
 
-## Using the Built-In Resource Manager
+### Using the Built-In Resource Manager
 
 TSS.Net has a built-in resource manager called `Tbs` (not to be confused
 with the `TbsDevice` used to communicate with the Windows TBS API). This
@@ -718,7 +716,7 @@ for (int j = 0; j < count; j++)
 tbsTpm.Dispose();
 ```
 
-## Other features
+### Other features
 
 TSS.Net was built primarily as a library to support the testing we did
 during the development and stabilization of TPM 2.0. As such it has
@@ -730,12 +728,12 @@ TSS.Net also supports some test-specific features, like various types of
 pre- and post-command callbacks. This document does not attempt to
 describe all TSS.Net capabilities.
 
-# Appendix A – Other Use Samples
+## Appendix A – Other Use Samples
 
 The samples in this appendix do not introduce any new TSS.Net features,
 but illustrate how the TPM can be used to perform various functions.
 
-## Creating a Primary Storage Key
+### Creating a Primary Storage Key
 
 This subroutine illustrates the creation of a primary storage key and
 returning the key handle to the caller. It is used in later samples.
@@ -792,7 +790,7 @@ TpmHandle CreateRsaPrimaryStorageKey(
 }
 ```
 
-## Creating and Using a Restricted Signing Key
+### Creating and Using a Restricted Signing Key
 
 This sample illustrates the creation and use of a signing key that is a
 child of a storage key (such as that created in the previous example).
@@ -967,11 +965,11 @@ internal void Sample9()
 }
 ```
 
-# Appendix B – Using TSS.Net With Mono
+## Appendix B – Using TSS.Net With Mono
 
 The Mono project is an open source .NET implementation that allows
 developers to create cross platform applications using C# and the Common
-Language Runtime. From the Mono Project:
+Language Runtime. From [the Mono Project](https://www.mono-project.com/):
 
 > **Mono** is a software platform designed to allow developers to easily
 > create cross platform applications. Sponsored by
@@ -989,7 +987,7 @@ Windows and Mac OS X, as well as mobile platforms, are also supported.
 TSS.Net, and its associated sample code, can be built and run under
 Mono. With the following caveats.
 
-## TSS.Net Testing and Mono Versions
+### TSS.Net Testing and Mono Versions
 
 The TSS.Net library and sample code have only been tested against Mono
 C# compiler (gmcs) version 3.0.6.0 and version 3.0.3.2 of the
@@ -1007,27 +1005,27 @@ GetCapabilities sample):
 
 ```sln
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2012
+## Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetCapabilities", "GetCapabilities.csproj", "{A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}"
 EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
+ GlobalSection(SolutionConfigurationPlatforms) = preSolution
+  Debug|Any CPU = Debug|Any CPU
+  Release|Any CPU = Release|Any CPU
+ EndGlobalSection
+ GlobalSection(ProjectConfigurationPlatforms) = postSolution
+  {A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+  {A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}.Debug|Any CPU.Build.0 = Debug|Any CPU
+  {A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}.Release|Any CPU.ActiveCfg = Release|Any CPU
+  {A704A8EE-003D-4B88-8AEF-4B0AC9A3D237}.Release|Any CPU.Build.0 = Release|Any CPU
+ EndGlobalSection
+ GlobalSection(SolutionProperties) = preSolution
+  HideSolutionNode = FALSE
+ EndGlobalSection
 EndGlobal
 ```
 
-## Mono and ECC
+### Mono and ECC
 
 Second, Mono does not currently support ECC. Specifically, the Mono
 runtime does not implement `System.Security.Cryptography.ECDsaCng` or
@@ -1035,7 +1033,7 @@ runtime does not implement `System.Security.Cryptography.ECDsaCng` or
 identifier ‘**MonoCS**’ in the TSS.Net sources will provide the user
 a summary of the effected code paths.
 
-## Other Issues
+### Other Issues
 
 Third, there is a related issue with RSA signing. The Authorization
 sample provides a good example of this issue. Mono reports an exception
