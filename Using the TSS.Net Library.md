@@ -414,8 +414,9 @@ Methods of the `Tpm2` class that do not result in a command being issued
 to the underlying TPM are conventionally prepended with an underscore.
 E.g., these methods are used in this example:
 
+|            Exception                   |                                     Meaning                                              |
+|----------------------------------------|------------------------------------------------------------------------------------------|
 | `Tpm._ExpectError(TpmRc expectedErr)` | Tells TSS.Net to create an exception if the TPM does not return the error value indicated |
-|----------------------------------------|-------------------------------------------------------------------------------------------|
 | `Tpm._AllowErrors()`                  | A Tpm2 member variable is set to `TpmRc.Success` or any error returned by the TPM         |
 | `Tpm._GetLastResponseCode()`          | Returns the last response code                                                            |
 
